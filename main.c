@@ -2,5 +2,5 @@
 
 int main(){
     printf("Bella raga");
-   return 0; 
+    return 0; 
 }
