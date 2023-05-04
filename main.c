@@ -14,7 +14,7 @@
 
 void stampa_menu(int);
 void getRigaCorrente(int);
-int checkInput();
+int checkInput(char [], int);
 int cruscotto_frecce();
 int cruscotto_gomme();
 char* datatime();
@@ -23,6 +23,7 @@ int stampa_sotto_menu_5();
 int usermode(int, char *[]);
 
 int riga;                   // Riga selezionata
+int rigaMax;
 
 // Le frecce sono stringe di 3 caratteri, 27 91 xx (il codice ascii delle lettere A B C D)
 
@@ -31,11 +32,19 @@ int main(int argc, char *argv[]){
     riga = 1;
     char input[5];
 
+    rigaMax = 6;
     int user_mode = usermode(argc, argv);
     
     do {
+
         stampa_menu(user_mode);
         scanf("%s", input);
+        int inp_status = checkInput(input, user_mode);
+
+        if(inp_status == 25){
+
+        }
+
     } while(strcmp(input, "0\0"));
 
     return 0; 
@@ -44,12 +53,7 @@ int main(int argc, char *argv[]){
 void stampa_menu(int user_mode){
     system("clear");
 
-    int n = 7;
-    if(user_mode){
-        n = 9;
-    }
-
-    for(int i = 1; i < n; i++){
+    for(int i = 1; i <= rigaMax; i++){
         if(i == riga){
             printf("%s", AZZURRO);
         }
@@ -98,11 +102,34 @@ void getRigaCorrente(int i){
     }
 }
 
+int checkInput(char input[], int umode){
+
+    if(input[0] == 27 && input[1] == 91 && input[3] == '\0'){
+        if(input[2] == 'A'){
+            riga--;
+            if(riga == 0){
+                riga = rigaMax;
+            }
+        } else if (input[2] == 'B'){
+            riga++;
+            if(riga > rigaMax){
+                riga = 1;
+            }
+        } else if (input[2] == 'C'){
+            return 25;
+        }
+    }
+
+    return 0;
+
+}
+
 int usermode(int narg, char *args[]){
 
     if(narg>1){
         char arg[6] = "2244\0";
         if( !strcmp(arg, args[1]) ){
+            rigaMax = 8;
             return 1;
         }
     }

@@ -3,9 +3,10 @@
 #include <string.h>
 
 int main(int argc, char *argv[]){
-    printf("N args: %d\n", argc);
-    char str[10] = "2244";
-    if(!(strcmp(str, argv[1]))){
-        printf("Uguali\n");
+    char str[5];
+    scanf("%s", str);
+    for(int i = 0; i < 5; i++){
+        printf("%d ", str[i]);
     }
+    printf("\n");
 }
