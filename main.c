@@ -15,10 +15,10 @@
 #define SOTTOMENU_4 "1.Blocco automatico porte: \0"
 #define SOTTOMENU_5 "1.Back-home: \0"
 
-void stampa_menu();
+void stampa_menu(int);
 void stampa_sotto_menu(int);
 void getRigaCorrente(int);
-int checkInput(char []);
+int checkInput(char [], int);
 int cruscotto_frecce();
 int cruscotto_gomme();
 char* datatime();
@@ -41,9 +41,9 @@ int main(int argc, char *argv[]){
 
     do {
 
-        int inp_status = checkInput(input);
+        int inp_status = checkInput(input, user_mode);
         if(inp_status != 25)
-            stampa_menu();
+            stampa_menu(user_mode);
         else
             stampa_sotto_menu(riga);
         scanf("%s", input);
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
     return 0; 
 }
 
-void stampa_menu()
+void stampa_menu(int user_mode)
 {
     system("clear");
 
@@ -85,7 +85,7 @@ void stampa_sotto_menu(int numero_riga)
             printf("%s",SOTTOMENU_5);
             break;
         default:
-            stampa_menu();
+            stampa_menu(0);
     }
 
     printf("\n");
@@ -124,7 +124,7 @@ void getRigaCorrente(int i)
     }
 }
 
-int checkInput(char input[])
+int checkInput(char input[], int umode)
 {
     if(input[0] == 27 && input[1] == 91 && input[3] == '\0'){
         if(input[2] == 'A'){
