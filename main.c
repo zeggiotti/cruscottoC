@@ -92,7 +92,7 @@ void stampa_menu(){
 
 void cruscotto_frecce(){
     char numstr[30];
-    int isnum = 1;
+    int isnum = 1, num;
 
     system("clear");
     printf("%s", SOTTOMENU_7_INFO);
@@ -100,7 +100,10 @@ void cruscotto_frecce(){
     printf("%s", SOTTOMENU_7_INPUT);
     scanf("%s", numstr);
 
-
+    numstr[29] = '\0';
+    for(int i = 0; numstr[i] != '\0'; i++){
+        if()
+    }
     
     frecce = num;
     if(frecce < 2){
