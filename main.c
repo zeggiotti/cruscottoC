@@ -15,7 +15,7 @@
 #define SOTTOMENU_4 "1.Blocco automatico porte: \0"
 #define SOTTOMENU_5 "1.Back-home: \0"
 
-void stampa_menu(int);
+void stampa_menu();
 void stampa_sotto_menu(int);
 void getRigaCorrente(int);
 int checkInput(char [], int);
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]){
 
         int inp_status = checkInput(input, user_mode);
         if(inp_status != 25)
-            stampa_menu(user_mode);
+            stampa_menu();
         else
             stampa_sotto_menu(riga);
         scanf("%s", input);
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
     return 0; 
 }
 
-void stampa_menu(int user_mode)
+void stampa_menu()
 {
     system("clear");
 
@@ -76,6 +76,8 @@ void stampa_menu(int user_mode)
 void stampa_sotto_menu(int numero_riga)
 {
     system("clear");
+
+    printf("%s", AZZURRO);
 
     switch (numero_riga) {
         case 4:
