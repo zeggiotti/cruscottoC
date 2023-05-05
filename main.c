@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+#include <time.h>
+
 #define PRIMA "1. Setting automobile: \0"
 #define SECONDA "2. Data: \0"
 #define TERZA "3. Ora: \0"
@@ -16,20 +19,26 @@
 #define SOTTOMENU_5 "1. Back-home: \0"
 #define SOTTOMENU_7_INFO "Numero di lampeggi impostato: \0"
 #define SOTTOMENU_7_INPUT "Inserisci un nuovo numero: \0"
-#define SOTTOMENU_8 "Pressione gomme resettata\0"
+#define SOTTOMENU_8_UNO "Pressione gomme \0"
+#define SOTTOMENU_8_DUE "resettata.\0"
 
 #define ON "ON\0"
 #define OFF "OFF\0"
+
+typedef struct {
+    char date[15];
+    char time[15];
+} datetime;
 
 void stampa_menu();
 void getRigaCorrente(int);
 int checkInput(char []);
 void cruscotto_frecce();
 int cruscotto_gomme();
-char* datatime();
 void stampa_sotto_menu_4();
 void stampa_sotto_menu_5();
 void stampa_sotto_menu_8();
+datetime datatime();
 int usermode(int, char *[]);
 
 int riga;                   // Riga selezionata
@@ -92,24 +101,36 @@ void stampa_menu(){
 
 void cruscotto_frecce(){
     char numstr[30];
-    int isnum = 1, num;
+    int isnum = 1, i;
 
     system("clear");
     printf("%s", SOTTOMENU_7_INFO);
+    printf("%s", AZZURRO);
     printf("%d\n", frecce);
+    printf("%s", BIANCO);
     printf("%s", SOTTOMENU_7_INPUT);
     scanf("%s", numstr);
 
     numstr[29] = '\0';
-    for(int i = 0; numstr[i] != '\0'; i++){
-        if()
+
+    if(numstr[0] == '-'){
+        i = 1;
+    } else {
+        i = 0;
+    }
+
+    for(; numstr[i] != '\0'; i++){
+        if( !(numstr[i] >= 48 && numstr[i] <= 57) )
+            isnum = 0;
     }
     
-    frecce = num;
-    if(frecce < 2){
-        frecce = 2;
-    } else if(frecce > 5){
-        frecce = 5;
+    if(isnum){
+        frecce = atoi(numstr);
+        if(frecce < 2){
+            frecce = 2;
+        } else if(frecce > 5){
+            frecce = 5;
+        }
     }
 }
 
@@ -119,8 +140,9 @@ void stampa_sotto_menu_4()
 
     char input[5];
 
+    printf("%s",SOTTOMENU_4);
     printf("%s", AZZURRO);
-    printf("%s%s",SOTTOMENU_4, ON);
+    printf("%s", (status4) ? ON : OFF);
     printf("%s", BIANCO);
     printf("\n");
 
@@ -144,8 +166,9 @@ void stampa_sotto_menu_5()
 
     char input[5];
 
+    printf("%s",SOTTOMENU_5);
     printf("%s", AZZURRO);
-    printf("%s%s",SOTTOMENU_5, ON);
+    printf("%s", (status5) ? ON : OFF);
     printf("%s", BIANCO);
     printf("\n");
 
@@ -167,14 +190,15 @@ void stampa_sotto_menu_8()
 {
     system("clear");
 
-    char input[5];
+    char s[5];
 
+    printf("%s",SOTTOMENU_8_UNO);
     printf("%s", AZZURRO);
-    printf("%s",SOTTOMENU_8);
+    printf("%s",SOTTOMENU_8_DUE);
     printf("%s", BIANCO);
     printf("\n");
 
-    scanf("%s", input);
+    scanf("%s", s);
 }
 
 void getRigaCorrente(int i){    
@@ -229,6 +253,15 @@ int checkInput(char input[]){
     return 0;
 
 }
+
+datetime datatime(){
+    time_t t = time(NULL);
+    struct tm *tm = localtime(&t);
+    
+    char *data;
+    data = asctime(tm);
+
+} 
 
 int usermode(int narg, char *args[]){
     if(narg>1){

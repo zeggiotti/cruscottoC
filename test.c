@@ -1,12 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+
+
 
 int main(int argc, char *argv[]){
-    char str[5];
-    scanf("%s", str);
-    for(int i = 0; i < 5; i++){
-        printf("%d ", str[i]);
+    
+    time_t t = time(NULL);
+    struct tm *tm = localtime(&t);
+    char *data;
+    data = asctime(tm);
+    for(int i = 0; *(data + i) != '\0'; i++){
+        printf("%c %d\n", *(data + i), *(data + i));
     }
-    printf("\n");
 }
