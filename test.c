@@ -8,10 +8,6 @@
 int main(int argc, char *argv[]){
     
     time_t t = time(NULL);
-    struct tm *tm = localtime(&t);
-    char *data;
-    data = asctime(tm);
-    for(int i = 0; *(data + i) != '\0'; i++){
-        printf("%c %d\n", *(data + i), *(data + i));
-    }
+    struct tm tm = *localtime(&t);
+    printf("%2d/%2d/%d\n", tm.tm_mday, tm.tm_mon, tm.tm_year + 1900);
 }

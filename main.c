@@ -261,7 +261,30 @@ datetime datatime(){
     char *data;
     data = asctime(tm);
 
+    char *giorno = substring(data, data, 0, 3);
+    char *mese = substring(data, data, 5, 3);
+
 } 
+
+char* substring(char *destination, const char *source, int beg, int n)
+{
+    // extracts `n` characters from the source string starting from `beg` index
+    // and copy them into the destination string
+    while (n > 0)
+    {
+        *destination = *(source + beg);
+ 
+        destination++;
+        source++;
+        n--;
+    }
+ 
+    // null terminate destination string
+    *destination = '\0';
+ 
+    // return the destination string
+    return destination;
+}
 
 int usermode(int narg, char *args[]){
     if(narg>1){
