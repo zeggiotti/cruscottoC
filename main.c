@@ -12,40 +12,58 @@
 #define AZZURRO "\033[36m"
 #define BIANCO "\033[37m"
 
-#define SOTTOMENU_4 "1.Blocco automatico porte: \0"
-#define SOTTOMENU_5 "1.Back-home: \0"
+#define SOTTOMENU_4 "1. Blocco automatico porte: \0"
+#define SOTTOMENU_5 "1. Back-home: \0"
+#define SOTTOMENU_7_INFO "Numero di lampeggi impostato: \0"
+#define SOTTOMENU_7_INPUT "Inserisci un nuovo numero: \0"
+#define SOTTOMENU_8 "Pressione gomme resettata\0"
+
+#define ON "ON\0"
+#define OFF "OFF\0"
 
 void stampa_menu();
-void stampa_sotto_menu(int);
 void getRigaCorrente(int);
-int checkInput(char [], int);
-int cruscotto_frecce();
+int checkInput(char []);
+void cruscotto_frecce();
 int cruscotto_gomme();
 char* datatime();
-int stampa_sotto_menu_4();
-int stampa_sotto_menu_5();
+void stampa_sotto_menu_4();
+void stampa_sotto_menu_5();
+void stampa_sotto_menu_8();
 int usermode(int, char *[]);
 
 int riga;                   // Riga selezionata
 int rigaMax;
 
+int status4, status5, frecce;
+
 // Le frecce sono stringe di 3 caratteri, 27 91 xx (il codice ascii delle lettere A B C D)
 
-int main(int argc, char *argv[]){
-    
+int main(int argc, char *argv[])
+{
     riga = 1;
+    status4 = 1;
+    status5 = 1;
+    frecce = 3;
+    
     char input[5];
 
     rigaMax = 6;
     int user_mode = usermode(argc, argv);
 
     do {
+        int inp_status = checkInput(input);
+        if(inp_status == 25 && riga == 4){
+            stampa_sotto_menu_4();
+        } else if(inp_status == 25 && riga == 5){
+            stampa_sotto_menu_5();
+        } else if(inp_status == 25 && riga == 7){
+            cruscotto_frecce();
+        } else if(inp_status == 25 && riga == 8){
+            stampa_sotto_menu_8();
+        }
 
-        int inp_status = checkInput(input, user_mode);
-        if(inp_status != 25)
-            stampa_menu();
-        else
-            stampa_sotto_menu(riga);
+        stampa_menu();
         scanf("%s", input);
 
     } while(strcmp(input, "0\0"));
@@ -53,8 +71,7 @@ int main(int argc, char *argv[]){
     return 0; 
 }
 
-void stampa_menu()
-{
+void stampa_menu(){
     system("clear");
 
     for(int i = 1; i <= rigaMax; i++){
@@ -73,28 +90,91 @@ void stampa_menu()
     printf("\n");
 }
 
-void stampa_sotto_menu(int numero_riga)
+void cruscotto_frecce(){
+    char numstr[30];
+    int isnum = 1;
+
+    system("clear");
+    printf("%s", SOTTOMENU_7_INFO);
+    printf("%d\n", frecce);
+    printf("%s", SOTTOMENU_7_INPUT);
+    scanf("%s", numstr);
+
+
+    
+    frecce = num;
+    if(frecce < 2){
+        frecce = 2;
+    } else if(frecce > 5){
+        frecce = 5;
+    }
+}
+
+void stampa_sotto_menu_4()
 {
     system("clear");
 
+    char input[5];
+
     printf("%s", AZZURRO);
-
-    switch (numero_riga) {
-        case 4:
-            printf("%s",SOTTOMENU_4);
-            break;
-        case 5:
-            printf("%s",SOTTOMENU_5);
-            break;
-        default:
-            stampa_menu(0);
-    }
-
+    printf("%s%s",SOTTOMENU_4, ON);
+    printf("%s", BIANCO);
     printf("\n");
+
+    scanf("%s", input);
+
+    if(input[0] == 27 && input[1] == 91 && input[3] == '\0')
+    {
+        if(input[2] == 'A' || input[2] == 'B')
+        {
+            if(status4 == 1)
+                status4 = 0;
+            else
+                status4 = 1;
+        }
+    }
 }
 
-void getRigaCorrente(int i)
-{    
+void stampa_sotto_menu_5()
+{
+    system("clear");
+
+    char input[5];
+
+    printf("%s", AZZURRO);
+    printf("%s%s",SOTTOMENU_5, ON);
+    printf("%s", BIANCO);
+    printf("\n");
+
+    scanf("%s", input);
+
+    if(input[0] == 27 && input[1] == 91 && input[3] == '\0')
+    {
+        if(input[2] == 'A' || input[2] == 'B')
+        {
+            if(status5 == 1)
+                status5 = 0;
+            else
+                status5 = 1;
+        }
+    }
+}
+
+void stampa_sotto_menu_8()
+{
+    system("clear");
+
+    char input[5];
+
+    printf("%s", AZZURRO);
+    printf("%s",SOTTOMENU_8);
+    printf("%s", BIANCO);
+    printf("\n");
+
+    scanf("%s", input);
+}
+
+void getRigaCorrente(int i){    
     switch (i) {
         case 1:
             printf("%s",PRIMA);
@@ -106,10 +186,10 @@ void getRigaCorrente(int i)
             printf("%s",TERZA);
             break;
         case 4:
-            printf("%s",QUARTA);
+            printf("%s%s",QUARTA, status4 ? ON : OFF);
             break;
         case 5:
-            printf("%s",QUINTA);
+            printf("%s%s",QUINTA, status5 ? ON : OFF);
             break;
         case 6:
             printf("%s",SESTA);
@@ -126,8 +206,7 @@ void getRigaCorrente(int i)
     }
 }
 
-int checkInput(char input[], int umode)
-{
+int checkInput(char input[]){
     if(input[0] == 27 && input[1] == 91 && input[3] == '\0'){
         if(input[2] == 'A'){
             riga--;
@@ -149,7 +228,6 @@ int checkInput(char input[], int umode)
 }
 
 int usermode(int narg, char *args[]){
-
     if(narg>1){
         char arg[6] = "2244\0";
         if( !strcmp(arg, args[1]) ){
