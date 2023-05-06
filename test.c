@@ -6,8 +6,13 @@
 
 
 int main(int argc, char *argv[]){
-    
-    time_t t = time(NULL);
-    struct tm tm = *localtime(&t);
-    printf("%2d/%2d/%d\n", tm.tm_mday, tm.tm_mon, tm.tm_year + 1900);
+    char str[5];
+    fgets(str, 5, stdin);
+    //scanf("%s", str);
+    for(int i = 0; i < 5; i++){
+        if(str[i] == 10)
+            str[i] = '\n';
+        printf("%d ", str[i]);
+    }
+    printf("Finito.\n");
 }

@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
+#include <limits.h>
 
 #define PRIMA "1. Setting automobile: \0"
 #define SECONDA "2. Data: \0"
@@ -55,13 +56,15 @@ int main(int argc, char *argv[])
     status5 = 1;
     frecce = 3;
     
-    char input[5];
+    char input[5] = {'\0'};
 
     rigaMax = 6;
     int user_mode = usermode(argc, argv);
 
     do {
+
         int inp_status = checkInput(input);
+
         if(inp_status == 25 && riga == 4){
             stampa_sotto_menu_4();
         } else if(inp_status == 25 && riga == 5){
@@ -73,7 +76,15 @@ int main(int argc, char *argv[])
         }
 
         stampa_menu();
-        scanf("%s", input);
+        fgets(input, 5, stdin);             // Uso fgets() in modo che anche il solo Invio viene considerato come input (scanf() lo ignora)
+
+        // Usare fgets() significa che comunque si riserva uno spazio per il \n, che deve essere eliminato per poter fare il controllo sull'input
+        // Se l'input ha più di 5 caratteri, in ultima posizione si salva il \0 e prima i primi 4 caratteri. (quindi funziona gia bene cosi)
+        for(int i = 0; i < 5; i++){
+            if(input[i] == 10){
+                input[i] = '\0';
+            }
+        }
 
     } while(strcmp(input, "0\0"));
 
@@ -101,31 +112,35 @@ void stampa_menu(){
 
 void cruscotto_frecce(){
     char numstr[30];
-    int isnum = 1, i;
 
     system("clear");
+
     printf("%s", SOTTOMENU_7_INFO);
     printf("%s", AZZURRO);
     printf("%d\n", frecce);
     printf("%s", BIANCO);
     printf("%s", SOTTOMENU_7_INPUT);
-    scanf("%s", numstr);
 
-    numstr[29] = '\0';
+    fgets(numstr, 30, stdin);
 
-    if(numstr[0] == '-'){
-        i = 1;
-    } else {
-        i = 0;
+    for(int i = 0; i < 30; i++){
+        if(numstr[i] == 10){
+            numstr[i] = '\0';
+        }
     }
 
-    for(; numstr[i] != '\0'; i++){
-        if( !(numstr[i] >= 48 && numstr[i] <= 57) )
-            isnum = 0;
-    }
+    int iszero = (strlen(numstr) > 0) ? 1 : 0;
+
     
-    if(isnum){
-        frecce = atoi(numstr);
+    for(int i = 0; numstr[i] != '\0'; i++){
+        if(numstr[i] != 48)
+            iszero = 0;
+    }
+
+    int tmp = (iszero) ? 1 : atoi(numstr);
+
+    if(tmp != 0){
+        frecce = tmp;
         if(frecce < 2){
             frecce = 2;
         } else if(frecce > 5){
@@ -146,7 +161,13 @@ void stampa_sotto_menu_4()
     printf("%s", BIANCO);
     printf("\n");
 
-    scanf("%s", input);
+    fgets(input, 5, stdin);
+
+    for(int i = 0; i < 5; i++){
+        if(input[i] == 10){
+            input[i] = '\0';
+        }
+    }
 
     if(input[0] == 27 && input[1] == 91 && input[3] == '\0')
     {
@@ -172,7 +193,13 @@ void stampa_sotto_menu_5()
     printf("%s", BIANCO);
     printf("\n");
 
-    scanf("%s", input);
+    fgets(input, 5, stdin);
+
+    for(int i = 0; i < 5; i++){
+        if(input[i] == 10){
+            input[i] = '\0';
+        }
+    }
 
     if(input[0] == 27 && input[1] == 91 && input[3] == '\0')
     {
@@ -190,7 +217,7 @@ void stampa_sotto_menu_8()
 {
     system("clear");
 
-    char s[5];
+    char input[5];
 
     printf("%s",SOTTOMENU_8_UNO);
     printf("%s", AZZURRO);
@@ -198,19 +225,27 @@ void stampa_sotto_menu_8()
     printf("%s", BIANCO);
     printf("\n");
 
-    scanf("%s", s);
+    fgets(input, 5, stdin);
+
+    for(int i = 0; i < 5; i++){
+        if(input[i] == 10){
+            input[i] = '\0';
+        }
+    }
 }
 
-void getRigaCorrente(int i){    
+void getRigaCorrente(int i){
+    datetime now;
+    now = datatime();
     switch (i) {
         case 1:
             printf("%s",PRIMA);
             break;
         case 2:
-            printf("%s",SECONDA);
+            printf("%s%s",SECONDA, now.date);
             break;
         case 3:
-            printf("%s",TERZA);
+            printf("%s%s",TERZA, now.time);
             break;
         case 4:
             printf("%s%s",QUARTA, status4 ? ON : OFF);
@@ -256,13 +291,13 @@ int checkInput(char input[]){
 
 datetime datatime(){
     time_t t = time(NULL);
-    struct tm *tm = localtime(&t);
+    struct tm tm = *localtime(&t);
     
-    char *data;
-    data = asctime(tm);
+    datetime d;
+    sprintf(d.date, "%02d/%02d/%04d", tm.tm_mday, tm.tm_mon, tm.tm_year + 1900);
+    sprintf(d.time, "%02d:%02d:%02d", tm.tm_hour, tm.tm_min, tm.tm_sec);
 
-    char *giorno = substring(data, data, 0, 3);
-    char *mese = substring(data, data, 5, 3);
+    return d;
 
 } 
 
